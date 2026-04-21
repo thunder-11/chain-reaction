@@ -2,8 +2,6 @@
 
 A high-performance, aesthetically pleasing implementation of the classic strategy board game **Chain Reaction**, built entirely from scratch using **Vanilla Web Technologies** (HTML, CSS, JavaScript) and powered by **Custom Data Structures** under the hood.
 
-![Game Preview](./style.css) *(Add a screenshot or animated GIF of the game here)*
-
 ## 🎮 Play the Game
 [**Play it Live!**](https://thunder-11.github.io/chain-reaction/) *(If deploying via GitHub Pages)*
 
