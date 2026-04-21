@@ -1,0 +1,973 @@
+/* ============================================================
+   Chain Reaction — Minimal Black & White Theme
+   Full theme support (dark/light) via CSS variables.
+   All colours use CSS variables — zero hardcoded hex values
+   outside the :root / [data-theme] blocks.
+   ============================================================ */
+
+/* ===== Variables ===== */
+:root {
+  --p1: #e74c3c;
+  --p2: #3498db;
+  --p3: #2ecc71;
+  --p4: #f1c40f;
+
+  --bg-primary:    #000000;
+  --bg-card:       #0d0d0d;
+  --bg-elevated:   #1a1a1a;
+  --border:        #ffffff;
+  --border-muted:  #2a2a2a;
+  --text-primary:  #ffffff;
+  --text-secondary:#888888;
+  --cell-bg:       #000000;
+  --cell-border:   #222222;
+  --hud-border:    #1a1a1a;
+  --accent:        #ffffff;
+
+  /* Win screen */
+  --win-bg: rgba(0, 0, 0, 0.95);
+}
+
+[data-theme="light"] {
+  --bg-primary:    #f5f5f0;
+  --bg-card:       #ffffff;
+  --bg-elevated:   #eaeae4;
+  --border:        #111111;
+  --border-muted:  #cccccc;
+  --text-primary:  #111111;
+  --text-secondary:#666666;
+  --cell-bg:       #ffffff;
+  --cell-border:   #dddddd;
+  --hud-bg:        #ffffff;
+  --hud-border:    #e0e0e0;
+  --accent:        #111111;
+
+  --win-bg: rgba(255, 255, 255, 0.95);
+}
+
+/* ===== Reset ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Thin top-border frame */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--border);
+  z-index: 999;
+}
+
+/* ===== Utility ===== */
+.hidden {
+  display: none !important;
+}
+
+/* ============================================================
+   START SCREEN
+   ============================================================ */
+#start-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  animation: fadeIn 600ms ease;
+}
+
+.start-card {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 48px 40px 40px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: none;
+  position: relative;
+}
+
+/* Terminal aesthetic label */
+.start-card::before {
+  content: '[ GAME ]';
+  display: block;
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  color: var(--border-muted);
+  letter-spacing: 3px;
+  margin-bottom: 16px;
+}
+
+.start-title {
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -2px;
+  color: var(--text-primary);
+  background: none;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: unset;
+  background-clip: unset;
+  animation: none;
+  margin-bottom: 8px;
+}
+
+.start-subtitle {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+
+/* Board size selector (section 7a) */
+.board-select {
+  margin-bottom: 20px;
+}
+
+.board-size-btns {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+/* Player count selector */
+.player-select {
+  margin-bottom: 20px;
+}
+
+.player-select-label {
+  display: block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.player-count-btns {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+/* Player name inputs (section 7a) */
+.player-names-section {
+  margin-bottom: 24px;
+}
+
+#player-name-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.player-name-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 220px;
+}
+
+.player-name-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.player-name-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--border-muted);
+  border-radius: 4px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 150ms ease;
+}
+
+.player-name-input:focus {
+  border-color: var(--border);
+}
+
+.pill-btn {
+  padding: 10px 24px;
+  border: 1px solid var(--border-muted);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.pill-btn:hover {
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+.pill-btn.active {
+  background: var(--text-primary);
+  border-color: var(--text-primary);
+  color: var(--bg-primary);
+  box-shadow: none;
+}
+
+/* Primary button */
+.primary-btn {
+  display: inline-block;
+  padding: 14px 48px;
+  border: none;
+  border-radius: 4px;
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background 150ms ease;
+  box-shadow: none;
+}
+
+.primary-btn:hover {
+  background: var(--text-secondary);
+  transform: none;
+  box-shadow: none;
+}
+
+.primary-btn:active {
+  transform: none;
+}
+
+/* Theme toggle button */
+.theme-toggle-btn {
+  background: transparent;
+  border: 1px solid var(--border-muted);
+  color: var(--text-secondary);
+  font-size: 1rem;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 150ms ease;
+  line-height: 1;
+}
+
+.theme-toggle-btn:hover {
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+/* Sound toggle button */
+.sound-toggle-btn {
+  background: transparent;
+  border: 1px solid var(--border-muted);
+  color: var(--text-secondary);
+  font-size: 1rem;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 150ms ease;
+  line-height: 1;
+}
+
+.sound-toggle-btn:hover {
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+.sound-toggle-btn.sound-off {
+  opacity: 0.4;
+}
+
+/* Start card theme toggle positioning */
+.start-card .theme-toggle-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+/* ============================================================
+   GAME SCREEN
+   ============================================================ */
+#game-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+  padding: 0 16px;
+  animation: fadeIn 400ms ease;
+}
+
+/* HUD */
+#hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 580px;
+  padding: 12px 20px;
+  background: var(--hud-bg);
+  border-bottom: 1px solid var(--hud-border);
+}
+
+.player-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hud-label {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.player-chip {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: none;
+  transition: background-color 300ms ease;
+  box-shadow: none;
+}
+
+.player-name {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.hud-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Action buttons (undo, etc) */
+.action-btn {
+  padding: 8px 16px;
+  border: 1px solid var(--border-muted);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.action-btn:hover:not(:disabled) {
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+.action-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* New Game button */
+#new-game-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+
+#new-game-btn:hover {
+  background: var(--text-secondary);
+}
+
+/* ============================================================
+   SCOREBOARD (section 7b)
+   ============================================================ */
+#scoreboard {
+  width: 100%;
+  max-width: 580px;
+  padding: 4px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.scoreboard-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  border-left: 3px solid transparent;
+  transition: all 150ms ease;
+}
+
+.scoreboard-row.scoreboard-active {
+  border-left-color: var(--sb-color);
+  background: color-mix(in srgb, var(--sb-color) 8%, transparent);
+}
+
+.scoreboard-row.scoreboard-eliminated {
+  opacity: 0.3;
+}
+
+.sb-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+}
+
+.sb-chip {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.sb-name {
+  color: var(--text-primary);
+  font-weight: 600;
+  flex: 1;
+}
+
+.sb-count {
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 0.7rem;
+}
+
+.sb-bar-track {
+  height: 3px;
+  background: var(--border-muted);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.sb-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 300ms ease;
+}
+
+/* Game content layout */
+#game-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding-top: 4px;
+}
+
+/* Board wrapper */
+#board-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+}
+
+/* Responsive board (section 7d) */
+#game-board {
+  display: grid;
+  gap: 1px;
+  width: min(90vw, calc(100vh - 200px), 520px);
+  aspect-ratio: var(--board-cols) / var(--board-rows);
+  user-select: none;
+  position: relative;
+}
+
+/* ============================================================
+   CELLS
+   ============================================================ */
+.cell {
+  aspect-ratio: 1;
+  background: var(--cell-bg);
+  border-radius: 0;
+  cursor: pointer;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 4px;
+  border: 1px solid var(--cell-border);
+  transition: border-color 200ms ease, background 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Remove the radial glow pseudo-element */
+.cell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 0;
+  background: none;
+  opacity: 0;
+}
+
+.cell:hover {
+  border-color: var(--border);
+  background: var(--bg-elevated);
+  filter: none;
+}
+
+.cell.owned {
+  border-color: var(--cell-color);
+  background: transparent;
+}
+
+/* Keyboard focus indicator */
+.cell.keyboard-focus {
+  outline: 2px solid var(--border);
+  outline-offset: -2px;
+  z-index: 3;
+}
+
+/* Cell flash on explosion */
+@keyframes cellExplode {
+  0%   { transform: scale(1);    border-color: var(--border); }
+  40%  { transform: scale(1.18); border-color: var(--border); }
+  100% { transform: scale(1);    border-color: var(--cell-border); }
+}
+
+.cell.exploding {
+  animation: cellExplode 80ms ease-out forwards;
+  z-index: 2;
+}
+
+/* Invalid move shake (section 7f) */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25%       { transform: translateX(-5px); }
+  75%       { transform: translateX(5px); }
+}
+
+.cell.invalid-move {
+  animation: shake 200ms ease;
+}
+
+/* ============================================================
+   ORBS (section 2 — absolutely positioned)
+   ============================================================ */
+
+/*
+ * Orb container — fills the entire cell and rotates around
+ * the cell's center. All child orbs orbit the center together.
+ * --orbit-speed is set from JS based on proximity to critical mass.
+ */
+.orb-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: transform 200ms ease;
+}
+
+.orb-container.orbiting {
+  animation: orbitSpin var(--orbit-speed, 1.82s) linear infinite;
+}
+
+@keyframes orbitSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.orb {
+  position: absolute;
+  width: 34%;
+  height: 34%;
+  border-radius: 50%;
+  background: var(--cell-color, #fff);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 6px var(--cell-color, #fff);
+  transition: top 200ms ease, left 200ms ease, opacity 200ms ease;
+  animation: orbPop 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes orbPop {
+  0%   { transform: translate(-50%, -50%) scale(0); }
+  70%  { transform: translate(-50%, -50%) scale(1.3); }
+  100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+/* Ghost orb preview (section 7c) */
+.orb-ghost {
+  opacity: 0.28;
+  animation: none;
+  box-shadow: none;
+}
+
+/* ============================================================
+   PARTICLES & SHOCKWAVES (section 3 — AnimationEngine)
+   ============================================================ */
+
+/* Flying orb particle */
+.particle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 20;
+  transform: translate(-50%, -50%);
+  animation: particleFly 180ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes particleFly {
+  from { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  to   { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.4); opacity: 0; }
+}
+
+/* Shockwave ring */
+.shockwave {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid var(--player-color, #fff);
+  transform: translate(-50%, -50%) scale(0.5);
+  pointer-events: none;
+  z-index: 15;
+  animation: shockwaveExpand 320ms ease-out forwards;
+}
+
+@keyframes shockwaveExpand {
+  0%   { transform: translate(-50%, -50%) scale(0.5); opacity: 0.9; }
+  100% { transform: translate(-50%, -50%) scale(2.8); opacity: 0; }
+}
+
+/* ============================================================
+   DEBUG OVERLAY
+   ============================================================ */
+#debug-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 200;
+  display: flex;
+  justify-content: flex-end;
+  align-items: stretch;
+}
+
+#debug-overlay.hidden {
+  display: none;
+}
+
+/* Debug panel — slides in from right */
+#debug-panel {
+  width: 300px;
+  background: var(--bg-card);
+  border-left: 1px solid var(--hud-border);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow-y: auto;
+  animation: slideInRight 200ms ease;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(300px); opacity: 0; }
+  to   { transform: translateX(0);     opacity: 1; }
+}
+
+/* Debug header bar */
+#debug-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--hud-border);
+  position: sticky;
+  top: 0;
+  background: var(--bg-card);
+}
+
+.debug-title {
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+#debug-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: color 150ms;
+  font-family: 'Outfit', sans-serif;
+}
+
+#debug-close-btn:hover {
+  color: var(--text-primary);
+}
+
+/* Debug content area */
+#debug-content {
+  padding: 16px;
+  flex: 1;
+}
+
+.debug-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border-muted);
+}
+
+.debug-row span  { color: var(--text-secondary); }
+.debug-row strong { color: var(--text-primary); font-weight: 500; }
+
+.debug-section {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text-secondary);
+  padding: 12px 0 6px;
+}
+
+/* Debug table for HashTable slots */
+.debug-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+.debug-table th {
+  text-align: left;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.6rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--border-muted);
+}
+
+.debug-table td {
+  padding: 3px 6px;
+  color: var(--text-primary);
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  border-bottom: 1px solid var(--border-muted);
+}
+
+.debug-table .slot-empty td { color: var(--text-secondary); opacity: 0.5; }
+.debug-table .slot-deleted td { color: var(--p1); }
+.debug-table .slot-live td { color: var(--text-primary); }
+
+/* DSA toggle button in HUD */
+#debug-toggle-btn {
+  background: transparent;
+  border: 1px solid var(--border-muted);
+  color: var(--text-secondary);
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 150ms ease;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+#debug-toggle-btn:hover {
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+#debug-toggle-btn.active {
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  border-color: var(--text-primary);
+}
+
+/* ============================================================
+   WIN SCREEN
+   ============================================================ */
+#win-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--win-bg);
+  backdrop-filter: blur(8px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.win-content {
+  text-align: center;
+  animation: winPop 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.win-trophy {
+  font-size: 4rem;
+  margin-bottom: 12px;
+  animation: trophyBounce 600ms ease infinite alternate;
+}
+
+@keyframes trophyBounce {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-8px); }
+}
+
+#winner-name {
+  font-size: 4rem;
+  font-weight: 700;
+  letter-spacing: -2px;
+  margin-bottom: 8px;
+}
+
+.win-sub {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 28px;
+}
+
+/* Win stats (section 7e) */
+.win-stats {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.win-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.win-stat-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text-secondary);
+}
+
+.win-stat strong {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+@keyframes winPop {
+  0%   { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   RESPONSIVE (section 7d)
+   ============================================================ */
+@media (max-width: 620px) {
+  #game-content {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #game-board {
+    width: min(90vw, calc(100vh - 260px), 520px);
+  }
+
+  .start-title {
+    font-size: 2.8rem;
+  }
+
+  #board-legend {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  #hud {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .hud-actions {
+    flex-wrap: wrap;
+  }
+
+  .win-stats {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 375px) {
+  .start-card {
+    padding: 32px 20px 24px;
+  }
+
+  .start-title {
+    font-size: 2.2rem;
+  }
+
+  .pill-btn {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+  }
+
+  #game-board {
+    width: min(95vw, calc(100vh - 280px), 360px);
+  }
+
+  #scoreboard {
+    padding: 2px 10px;
+  }
+}

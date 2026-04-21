@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Chain Reaction — a multiplayer strategy board game built with vanilla JavaScript and custom data structures.">
+  <title>Chain Reaction</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ========== Start Screen ========== -->
+  <div id="start-screen">
+    <div class="start-card">
+      <h1 class="start-title">Chain<br>Reaction</h1>
+      <p class="start-subtitle">A strategy game powered by custom data structures</p>
+
+      <!-- Theme toggle on start screen -->
+      <button id="theme-btn-start" class="action-btn theme-toggle-btn" aria-label="Toggle theme">
+        <span class="theme-icon">☀</span>
+      </button>
+
+      <!-- Board size selector (section 7a) -->
+      <div class="board-select">
+        <span class="player-select-label">Board Size</span>
+        <div class="board-size-btns" id="board-size-btns">
+          <button class="pill-btn" data-size="6x6">6×6</button>
+          <button class="pill-btn active" data-size="8x8">8×8</button>
+          <button class="pill-btn" data-size="10x10">10×10</button>
+        </div>
+      </div>
+
+      <!-- Player count selector -->
+      <div class="player-select">
+        <span class="player-select-label">Players</span>
+        <div class="player-count-btns" id="player-count-btns">
+          <button class="pill-btn active" data-count="2">2</button>
+          <button class="pill-btn" data-count="3">3</button>
+          <button class="pill-btn" data-count="4">4</button>
+        </div>
+      </div>
+
+      <!-- Player name inputs (section 7a) -->
+      <div class="player-names-section">
+        <span class="player-select-label">Player Names</span>
+        <div id="player-name-inputs"></div>
+      </div>
+
+      <button id="start-btn" class="primary-btn">Start Game</button>
+    </div>
+  </div>
+
+  <!-- ========== Game Screen ========== -->
+  <div id="game-screen" class="hidden">
+
+    <!-- HUD -->
+    <div id="hud">
+      <div class="player-indicator">
+        <span class="hud-label">Turn:</span>
+        <span id="current-player-chip" class="player-chip"></span>
+        <span id="current-player-name" class="player-name"></span>
+      </div>
+      <div class="hud-actions">
+        <button id="undo-btn" class="action-btn" disabled>↩ Undo</button>
+        <button id="new-game-btn" class="action-btn">New Game</button>
+        <button id="debug-toggle-btn">DSA</button>
+        <!-- Theme toggle in HUD (section 4) -->
+        <button id="theme-btn-hud" class="action-btn theme-toggle-btn" aria-label="Toggle theme">
+          <span class="theme-icon">☀</span>
+        </button>
+        <!-- Sound toggle in HUD (section 5) -->
+        <button id="sound-toggle-btn" class="action-btn sound-toggle-btn" aria-label="Toggle sound">
+          <span class="sound-icon">♪</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Scoreboard (section 7b) -->
+    <div id="scoreboard"></div>
+
+    <!-- Main Content -->
+    <div id="game-content">
+      <div id="board-wrapper">
+        <div id="game-board"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== Win Screen ========== -->
+  <div id="win-screen" class="hidden">
+    <div class="win-content">
+      <div class="win-trophy">🏆</div>
+      <h2 id="winner-name"></h2>
+      <p class="win-sub">All opponents eliminated</p>
+      <button id="play-again-btn" class="primary-btn">Play Again</button>
+      <!-- Win stats (section 7e) -->
+      <div id="win-stats" class="win-stats"></div>
+    </div>
+  </div>
+
+  <!-- ========== Debug Overlay ========== -->
+  <div id="debug-overlay" class="hidden">
+    <div id="debug-panel">
+      <div id="debug-header">
+        <span class="debug-title">⚙ DSA DEBUG</span>
+        <button id="debug-close-btn">✕</button>
+      </div>
+      <div id="debug-content"></div>
+    </div>
+  </div>
+
+  <!-- ========== Scripts ========== -->
+  <!-- Data Structures -->
+  <script src="js/ds/Queue.js"></script>
+  <script src="js/ds/Stack.js"></script>
+  <script src="js/ds/LinkedList.js"></script>
+  <script src="js/ds/HashTable.js"></script>
+
+  <!-- Game Logic -->
+  <script src="js/game/Board.js"></script>
+  <script src="js/game/ExplosionEngine.js"></script>
+  <script src="js/game/PlayerManager.js"></script>
+  <script src="js/game/UndoManager.js"></script>
+  <script src="js/game/GameController.js"></script>
+
+  <!-- Rendering + FX -->
+  <script src="js/AnimationEngine.js"></script>
+  <script src="js/SoundEngine.js"></script>
+  <script src="js/ThemeManager.js"></script>
+  <script src="js/Renderer.js"></script>
+  <script src="js/main.js"></script>
+
+</body>
+</html>
